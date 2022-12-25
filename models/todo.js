@@ -9,15 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static async addTask(params) {
+    static async Taskadding(params) {
       return await Todo.create(params);
     }
-    static async showList() {
+    static async Listshow() {
       console.log("My Todo list \n");
 
-      console.log("Overdue");
+      console.log("Over due");
 
-      const overdueItems = await Todo.overdue();
+      const overdueItems = await Todo.dueover();
       console.log(
         overdueItems.map((item) => item.displayableString()).join("\n")
       );
@@ -25,19 +25,40 @@ module.exports = (sequelize, DataTypes) => {
 
       console.log("Due Today");
 
-      const dueItems = await Todo.dueToday();
+      const dueItems = await Todo.Todaydue();
       console.log(dueItems.map((item) => item.displayableString()).join("\n"));
       console.log("\n");
 
       console.log("Due Later");
-      const dueLaterItems = await Todo.dueLater();
+      const dueLaterItems = await Todo.Laterdue();
       console.log(
         dueLaterItems.map((item) => item.displayableString()).join("\n")
       );
     }
 
-    static async overdue() {
-      // FILL IN HERE TO RETURN OVERDUE ITEMS
+    static async Laterdue() {
+      return Todo.findAll({
+        where: {
+          dueDate: {
+            [Op.gt]: new Date(),
+          },
+        },
+        order: [["id", "ASC"]],
+      });
+    }
+
+    static async Todaydue() {
+      return Todo.findAll({
+        where: {
+          dueDate: {
+            [Op.eq]: new Date(),
+          },
+        },
+        order: [["id", "ASC"]],
+      });
+    }
+
+    static async dueover() {
       return Todo.findAll({
         where: {
           dueDate: {
@@ -49,32 +70,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async dueToday() {
-      // FILL IN HERE TO RETURN ITEMS DUE tODAY
-      return Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.eq]: new Date(),
-          },
-        },
-        order: [["id", "ASC"]],
-      });
-    }
-
-    static async dueLater() {
-      // FILL IN HERE TO RETURN ITEMS DUE LATER
-      return Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.gt]: new Date(),
-          },
-        },
-        order: [["id", "ASC"]],
-      });
-    }
-
     static async markAsComplete(id) {
-      // FILL IN HERE TO MARK AN ITEM AS COMPLETE
       return Todo.update(
         { completed: true },
         {
