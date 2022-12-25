@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
     /**
@@ -9,15 +7,15 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static async Taskadding(params) {
+    static async addTask(params) {
       return await Todo.create(params);
     }
-    static async Listshow() {
+    static async showList() {
       console.log("My Todo list \n");
 
-      console.log("Over due");
+      console.log("Overdue");
 
-      const overdueItems = await Todo.dueover();
+      const overdueItems = await Todo.overdue();
       console.log(
         overdueItems.map((item) => item.displayableString()).join("\n")
       );
@@ -25,18 +23,18 @@ module.exports = (sequelize, DataTypes) => {
 
       console.log("Due Today");
 
-      const dueItems = await Todo.Todaydue();
+      const dueItems = await Todo.dueToday();
       console.log(dueItems.map((item) => item.displayableString()).join("\n"));
       console.log("\n");
 
       console.log("Due Later");
-      const dueLaterItems = await Todo.Laterdue();
+      const dueLaterItems = await Todo.dueLater();
       console.log(
         dueLaterItems.map((item) => item.displayableString()).join("\n")
       );
     }
 
-    static async Laterdue() {
+    static async dueLater() {
       return Todo.findAll({
         where: {
           dueDate: {
@@ -47,23 +45,23 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
 
-    static async Todaydue() {
+    static async overdue() {
       return Todo.findAll({
         where: {
           dueDate: {
-            [Op.eq]: new Date(),
+            [Op.lt]: new Date(),
+            completed: false
           },
         },
         order: [["id", "ASC"]],
       });
     }
 
-    static async dueover() {
+    static async dueToday() {
       return Todo.findAll({
         where: {
           dueDate: {
-            [Op.lt]: new Date(),
-            completed: false
+            [Op.eq]: new Date(),
           },
         },
         order: [["id", "ASC"]],
