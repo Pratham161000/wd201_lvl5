@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 const { Model, Op } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
@@ -34,41 +34,43 @@ module.exports = (sequelize, DataTypes) => {
       );
     }
 
-    static async dueLater() {
-      return Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.gt]: new Date(),
-          },
-        },
-        order: [["id", "ASC"]],
-      });
-    }
-
     static async overdue() {
-      return Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.lt]: new Date(),
-            completed: false
-          },
-        },
-        order: [["id", "ASC"]],
-      });
-    }
+			// FILL IN HERE TO RETURN OVERDUE ITEMS
+			return Todo.findAll({
+				where: {
+					dueDate: {
+						[Op.lt]: new Date(),
+					},
+				},
+			});
+		}
 
     static async dueToday() {
-      return Todo.findAll({
-        where: {
-          dueDate: {
-            [Op.eq]: new Date(),
-          },
-        },
-        order: [["id", "ASC"]],
-      });
-    }
+			// FILL IN HERE TO RETURN ITEMS DUE tODAY
+			return Todo.findAll({
+				where: {
+					dueDate: {
+						[Op.eq]: new Date(),
+					},
+				},
+				order: [["id", "ASC"]],
+			});
+		}
 
+		static async dueLater() {
+			// FILL IN HERE TO RETURN ITEMS DUE LATER
+			return Todo.findAll({
+				where: {
+					dueDate: {
+						[Op.gt]: new Date(),
+					},
+				},
+				order: [["id", "ASC"]],
+			});
+		}
+    
     static async markAsComplete(id) {
+      // FILL IN HERE TO MARK AN ITEM AS COMPLETE
       return Todo.update(
         { completed: true },
         {
